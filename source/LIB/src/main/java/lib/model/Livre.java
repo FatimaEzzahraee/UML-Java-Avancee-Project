@@ -1,9 +1,8 @@
-package lib.model;
-
+package model;
 
 import java.util.List;
 
-public class Livre<Exemplaire> {
+public class Livre {
     private int id;
     private String titre;
     private String auteur;

@@ -1,4 +1,4 @@
-package lib.model;
+package model;
 
 public class Utilisateur {
     private int id;
