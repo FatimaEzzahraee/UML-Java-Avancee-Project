@@ -3,6 +3,10 @@ package lib.ui;
 import javax.swing.*;
 
 public class MainDashboard extends JFrame {
+	/**
+	 * Main UI view of the application.
+	 * 
+	 * This class belongs to the UI package*/
 
     public MainDashboard() {
         setTitle("Bibliothèque - Dashboard");

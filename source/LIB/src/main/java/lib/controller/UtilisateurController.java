@@ -6,6 +6,10 @@ import lib.ui.UtilisateurForm;
 import javax.swing.*;
 
 public class UtilisateurController {
+	/**
+	 * Controller responsible for managing user-related actions.
+	 * 
+	 * This class is part of the Controller package*/
 
     private UtilisateurForm view;
     private UtilisateurService service;
