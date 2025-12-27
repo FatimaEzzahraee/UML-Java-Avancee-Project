@@ -1,10 +1,5 @@
-package service;
-
-import model.Utilisateur;
+package lib.service;
 
 public class UtilisateurService {
 
-    public boolean estAdmin(Utilisateur u) {
-        return u.getRole().equalsIgnoreCase("ADMIN");
-    }
 }
