@@ -1,5 +1,6 @@
 package lib.model;
 
+
 import java.time.LocalDate;
 
 public class Emprunt {
@@ -48,5 +49,4 @@ public class Emprunt {
             this.retard = false;
         }
     }
-
 }

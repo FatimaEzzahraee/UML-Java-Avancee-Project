@@ -1,8 +1,11 @@
 package lib.model;
 
+
+
 public class Categorie {
     private int id;
     private String nom;
+
 
     public Categorie() {}
 
@@ -10,6 +13,7 @@ public class Categorie {
         this.id = id;
         this.nom = nom;
     }
+
 
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
