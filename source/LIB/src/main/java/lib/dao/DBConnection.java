@@ -9,9 +9,9 @@ public class DBConnection {
     private static DBConnection instance;
     private Connection connection;
 
-    private static final String URL = "jdbc:mysql://localhost:3306/jdbctp";
+    private static final String URL = "jdbc:mysql://localhost:3306/biblio";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "root123";
 
     private DBConnection() {
         try {

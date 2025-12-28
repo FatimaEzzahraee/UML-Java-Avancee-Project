@@ -14,26 +14,48 @@ public class EmpruntController {
     private EmpruntList list;
     private EmpruntService service = new EmpruntService();
 
+    // ===== CONSTRUCTEUR POUR ADMIN =====
     public EmpruntController(EmpruntForm form, EmpruntList list) {
         this.form = form;
         this.list = list;
 
-        form.getBtnEmprunter().addActionListener(e -> emprunter());
-        form.getBtnRetourner().addActionListener(e -> retourner());
+        if (form != null) {
+            // Actions des boutons (uniquement si form disponible)
+            form.getBtnEmprunter().addActionListener(e -> emprunter());
+            form.getBtnRetourner().addActionListener(e -> retourner());
+        }
 
+        // Charger la liste au démarrage
         charger();
     }
 
+    // ===== CONSTRUCTEUR POUR MES EMPRUNTS (adhérent) =====
+    public EmpruntController(EmpruntList list) {
+        this.form = null; // pas de bouton Emprunter ici
+        this.list = list;
+        charger();
+    }
+
+    // ===== EMPRUNTER UN LIVRE =====
     private void emprunter() {
         try {
-            service.emprunter(form.getAdherentId(), form.getLivreId());
+            int idAdherent = form.getAdherentId();
+            int idLivre = form.getLivreId();
+
+            service.emprunter(idAdherent, idLivre);
+
+            // Rafraîchir la table
             charger();
-            JOptionPane.showMessageDialog(null, "Emprunt effectué");
+
+            JOptionPane.showMessageDialog(null, "Emprunt effectué !");
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(null, ex.getMessage());
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
         }
     }
 
+    // ===== RETOURNER UN LIVRE =====
     private void retourner() {
         int row = list.getTable().getSelectedRow();
         if (row == -1) {
@@ -41,30 +63,69 @@ public class EmpruntController {
             return;
         }
 
-        // Récupérer l'ID de l'emprunt (colonne 0)
-        int idEmprunt = (int) list.getModel().getValueAt(row, 0);
+        // Récupération de l'emprunt correspondant à la ligne
+        Emprunt e = list.getEmpruntAt(row); // méthode à créer dans EmpruntList
+        if (e == null) return;
 
-        // Récupérer le livre depuis la liste métier
-        Emprunt emprunt = service.lister().get(row);
-        int idLivre = emprunt.getLivre().getId();
+        try {
+            service.retourner(e.getId(), e.getLivre().getId());
 
-        service.retourner(idEmprunt, idLivre);
-        charger();
+            // Rafraîchir la table
+            charger();
 
-        JOptionPane.showMessageDialog(null, "Livre retourné");
+            JOptionPane.showMessageDialog(null, "Livre retourné et stock mis à jour !");
+        } catch (RuntimeException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "Une erreur est survenue : " + ex.getMessage(), "Erreur", JOptionPane.ERROR_MESSAGE);
+        }
     }
 
-    private void charger() {
+    // ===== AFFICHER LES EMPRUNTS D’UN ADHÉRENT =====
+    public void afficherMesEmprunts(int idAdherent) {
         DefaultTableModel model = list.getModel();
-        model.setRowCount(0);
+        model.setRowCount(0); // vider le tableau
 
-        for (Emprunt e : service.lister()) {
+        for (Emprunt e : service.mesEmprunts(idAdherent)) {
+            String statutAffiche = e.getStatut();
+
+            // Vérifier retard
+            if ("EN_COURS".equals(statutAffiche) && 
+                e.getDateEmprunt().plusDays(14).isBefore(java.time.LocalDate.now())) {
+                statutAffiche = "RETARD";
+            }
+
             model.addRow(new Object[]{
                     e.getId(),
                     e.getAdherent().getNom(),
                     e.getLivre().getTitre(),
                     e.getDateEmprunt(),
-                    e.getStatut()
+                    statutAffiche
+            });
+        }
+    }
+
+    // ===== CHARGER LA LISTE DES EMPRUNTS =====
+    private void charger() {
+        if (list == null) return;
+
+        DefaultTableModel model = list.getModel();
+        model.setRowCount(0);
+
+        for (Emprunt e : service.lister()) {
+            String statutAffiche = e.getStatut();
+
+            // Vérifier si l'emprunt est en retard
+            if ("EN_COURS".equals(statutAffiche) && e.getDateEmprunt().plusDays(14).isBefore(java.time.LocalDate.now())) {
+                statutAffiche = "RETARD";
+            }
+
+            model.addRow(new Object[]{
+                    e.getId(),
+                    e.getAdherent().getNom(),
+                    e.getLivre().getTitre(),
+                    e.getDateEmprunt(),
+                    statutAffiche
             });
         }
     }

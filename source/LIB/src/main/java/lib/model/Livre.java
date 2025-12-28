@@ -4,7 +4,8 @@ public class Livre {
     private int id;
     private String titre;
     private String auteur;
-    private int nbExemplaires;
+    private int nbTotalExemplaires;    // Stock total
+    private int nbExemplairesDisponibles; // Stock disponible
     private Categorie categorie;
 
     public Livre() {}
@@ -13,7 +14,8 @@ public class Livre {
         this.id = id;
         this.titre = titre;
         this.auteur = auteur;
-        this.nbExemplaires = nbExemplaires;
+        this.nbTotalExemplaires = nbExemplaires;
+        this.nbExemplairesDisponibles = nbExemplaires; // Au départ, tout le stock est dispo
         this.categorie = categorie;
     }
 
@@ -26,9 +28,34 @@ public class Livre {
     public String getAuteur() { return auteur; }
     public void setAuteur(String auteur) { this.auteur = auteur; }
 
-    public int getNbExemplaires() { return nbExemplaires; }
-    public void setNbExemplaires(int nbExemplaires) { this.nbExemplaires = nbExemplaires; }
+    public int getNbTotalExemplaires() { return nbTotalExemplaires; }
+    public void setNbTotalExemplaires(int nbTotalExemplaires) { 
+        this.nbTotalExemplaires = nbTotalExemplaires; 
+    }
+
+    public int getNbExemplairesDisponibles() { return nbExemplairesDisponibles; }
+    public void setNbExemplairesDisponibles(int nbExemplairesDisponibles) { 
+        this.nbExemplairesDisponibles = nbExemplairesDisponibles; 
+    }
 
     public Categorie getCategorie() { return categorie; }
     public void setCategorie(Categorie categorie) { this.categorie = categorie; }
+
+    // ===== Méthodes pour gérer le stock =====
+    public boolean estDisponible() {
+        return nbExemplairesDisponibles > 0;
+    }
+
+    public void emprunterExemplaire() {
+        if (nbExemplairesDisponibles <= 0) {
+            throw new RuntimeException("Aucun exemplaire disponible pour ce livre !");
+        }
+        nbExemplairesDisponibles--;
+    }
+
+    public void retournerExemplaire() {
+        if (nbExemplairesDisponibles < nbTotalExemplaires) {
+            nbExemplairesDisponibles++;
+        }
+    }
 }
