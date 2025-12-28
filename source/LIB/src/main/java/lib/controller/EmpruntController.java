@@ -86,24 +86,34 @@ public class EmpruntController {
         DefaultTableModel model = list.getModel();
         model.setRowCount(0); // vider le tableau
 
+        boolean estAdherent = model.getColumnCount() == 3; // si 3 colonnes, c'est affichage adhérent
+
         for (Emprunt e : service.mesEmprunts(idAdherent)) {
             String statutAffiche = e.getStatut();
 
-            // Vérifier retard
             if ("EN_COURS".equals(statutAffiche) && 
                 e.getDateEmprunt().plusDays(14).isBefore(java.time.LocalDate.now())) {
                 statutAffiche = "RETARD";
             }
 
-            model.addRow(new Object[]{
+            if (estAdherent) {
+                model.addRow(new Object[]{
+                    e.getLivre().getTitre(),
+                    e.getDateEmprunt(),
+                    statutAffiche
+                });
+            } else {
+                model.addRow(new Object[]{
                     e.getId(),
                     e.getAdherent().getNom(),
                     e.getLivre().getTitre(),
                     e.getDateEmprunt(),
                     statutAffiche
-            });
+                });
+            }
         }
     }
+   
 
     // ===== CHARGER LA LISTE DES EMPRUNTS =====
     private void charger() {

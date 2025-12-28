@@ -11,7 +11,7 @@ public class EmpruntList extends JPanel {
 
     private JTable table;
     private DefaultTableModel model;
-    private List<Emprunt> emprunts = new ArrayList<>(); // liste utilisée pour remplir le JTable
+    private List<Emprunt> emprunts = new ArrayList<>();
 
     public EmpruntList() {
         model = new DefaultTableModel(new Object[]{"ID", "Adhérent", "Livre", "Date", "Statut"}, 0);
@@ -41,7 +41,6 @@ public class EmpruntList extends JPanel {
         }
     }
 
-    // ===== Méthode à ajouter pour récupérer un emprunt selon la ligne =====
     public Emprunt getEmpruntAt(int row) {
         if (row >= 0 && row < emprunts.size()) {
             return emprunts.get(row);
