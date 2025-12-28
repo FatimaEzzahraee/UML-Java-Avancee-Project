@@ -31,4 +31,8 @@ public class LivreList extends JPanel {
     public DefaultTableModel getModel() { return model; }
     public JButton getBtnAdd() { return btnAdd; }
     public JButton getBtnDelete() { return btnDelete; }
+    public JTable getTable() {
+        return table;
+    }
+
 }

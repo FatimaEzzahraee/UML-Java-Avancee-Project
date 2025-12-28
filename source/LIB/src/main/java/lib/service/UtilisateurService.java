@@ -1,10 +1,25 @@
-package service;
+package lib.service;
 
-import model.Utilisateur;
+import lib.dao.UtilisateurDAO;
+import lib.model.Utilisateur;
 
 public class UtilisateurService {
 
-    public boolean estAdmin(Utilisateur u) {
-        return u.getRole().equalsIgnoreCase("ADMIN");
+    private UtilisateurDAO dao = new UtilisateurDAO();
+
+    public void creerUtilisateur(String username, String password, String role) {
+        Utilisateur u = new Utilisateur();
+        u.setUsername(username);
+        u.setPassword(password);
+        u.setRole(role);
+        dao.ajouter(u);
+    }
+
+    public void activerUtilisateur(int id) {
+        dao.activer(id);
+    }
+
+    public void desactiverUtilisateur(int id) {
+        dao.desactiver(id);
     }
 }

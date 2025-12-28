@@ -1,22 +1,13 @@
-package model;
-
-import java.util.List;
+package lib.model;
 
 public class Adherent {
+
     private int id;
     private String nom;
+    private String email;
     private boolean bloque;
-    private Utilisateur utilisateur;
-    private List<Emprunt> emprunts;
 
     public Adherent() {}
-
-    public Adherent(int id, String nom, boolean bloque, Utilisateur utilisateur) {
-        this.id = id;
-        this.nom = nom;
-        this.bloque = bloque;
-        this.utilisateur = utilisateur;
-    }
 
     public int getId() {
         return id;
@@ -34,27 +25,19 @@ public class Adherent {
         this.nom = nom;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public boolean isBloque() {
         return bloque;
     }
 
     public void setBloque(boolean bloque) {
         this.bloque = bloque;
-    }
-
-    public Utilisateur getUtilisateur() {
-        return utilisateur;
-    }
-
-    public void setUtilisateur(Utilisateur utilisateur) {
-        this.utilisateur = utilisateur;
-    }
-
-    public List<Emprunt> getEmprunts() {
-        return emprunts;
-    }
-
-    public void setEmprunts(List<Emprunt> emprunts) {
-        this.emprunts = emprunts;
     }
 }

@@ -1,21 +1,23 @@
-package service;
+package lib.service;
 
-import dao.UtilisateurDAO;
-import model.Utilisateur;
+import lib.dao.UtilisateurDAO;
+import lib.model.Utilisateur;
 
 public class AuthService {
 
-    private UtilisateurDAO utilisateurDAO;
+    private UtilisateurDAO dao = new UtilisateurDAO();
 
-    public AuthService(UtilisateurDAO utilisateurDAO) {
-        this.utilisateurDAO = utilisateurDAO;
-    }
+    public Utilisateur login(String username, String password) throws Exception {
+        Utilisateur u = dao.chercherParUsername(username);
 
-    public Utilisateur login(String username, String password) {
-        Utilisateur u = utilisateurDAO.findByUsername(username);
-        if (u != null && u.getPassword().equals(password)) {
-            return u;
+        if (u == null) {
+            throw new Exception("Login ou mot de passe incorrect");
         }
-        return null;
+
+        if (!u.getPassword().equals(password)) {
+            throw new Exception("Login ou mot de passe incorrect");
+        }
+
+        return u;
     }
 }

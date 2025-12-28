@@ -5,8 +5,10 @@ import java.awt.*;
 
 public class EmpruntForm extends JPanel {
 
-    private JTextField txtAdherentId, txtIsbn;
-    private JButton btnEmprunter, btnRetourner;
+    private JTextField txtAdherentId;
+    private JTextField txtLivreId;
+    private JButton btnEmprunter;
+    private JButton btnRetourner;
 
     public EmpruntForm() {
         setLayout(new GridLayout(3, 2));
@@ -15,9 +17,9 @@ public class EmpruntForm extends JPanel {
         txtAdherentId = new JTextField();
         add(txtAdherentId);
 
-        add(new JLabel("ISBN Livre :"));
-        txtIsbn = new JTextField();
-        add(txtIsbn);
+        add(new JLabel("ID Livre :"));
+        txtLivreId = new JTextField();
+        add(txtLivreId);
 
         btnEmprunter = new JButton("Emprunter");
         btnRetourner = new JButton("Retourner");
@@ -26,8 +28,19 @@ public class EmpruntForm extends JPanel {
         add(btnRetourner);
     }
 
-    public int getAdherentId() { return Integer.parseInt(txtAdherentId.getText()); }
-    public String getIsbn() { return txtIsbn.getText(); }
-    public JButton getBtnEmprunter() { return btnEmprunter; }
-    public JButton getBtnRetourner() { return btnRetourner; }
+    public int getAdherentId() {
+        return Integer.parseInt(txtAdherentId.getText());
+    }
+
+    public int getLivreId() {
+        return Integer.parseInt(txtLivreId.getText());
+    }
+
+    public JButton getBtnEmprunter() {
+        return btnEmprunter;
+    }
+
+    public JButton getBtnRetourner() {
+        return btnRetourner;
+    }
 }

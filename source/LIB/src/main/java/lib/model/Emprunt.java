@@ -1,26 +1,17 @@
-package model;
+package lib.model;
 
 import java.time.LocalDate;
 
 public class Emprunt {
+
     private int id;
-    private Livre livre;
     private Adherent adherent;
+    private Livre livre;
     private LocalDate dateEmprunt;
     private LocalDate dateRetour;
-    private String statut; // EN_COURS, RETOURNE, RETARD
+    private String statut;
 
     public Emprunt() {}
-
-    public Emprunt(int id, Livre livre, Adherent adherent,
-                   LocalDate dateEmprunt, LocalDate dateRetour, String statut) {
-        this.id = id;
-        this.livre = livre;
-        this.adherent = adherent;
-        this.dateEmprunt = dateEmprunt;
-        this.dateRetour = dateRetour;
-        this.statut = statut;
-    }
 
     public int getId() {
         return id;
@@ -30,20 +21,20 @@ public class Emprunt {
         this.id = id;
     }
 
-    public Livre getLivre() {
-        return livre;
-    }
-
-    public void setLivre(Livre livre) {
-        this.livre = livre;
-    }
-
     public Adherent getAdherent() {
         return adherent;
     }
 
     public void setAdherent(Adherent adherent) {
         this.adherent = adherent;
+    }
+
+    public Livre getLivre() {
+        return livre;
+    }
+
+    public void setLivre(Livre livre) {
+        this.livre = livre;
     }
 
     public LocalDate getDateEmprunt() {

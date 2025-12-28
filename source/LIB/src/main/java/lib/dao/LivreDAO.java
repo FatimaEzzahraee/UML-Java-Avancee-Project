@@ -1,86 +1,82 @@
 package lib.dao;
 
+import lib.model.Livre;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import lib.model.Livre;
-import lib.model.Categorie;
 
 public class LivreDAO {
 
     private Connection conn = DBConnection.getInstance().getConnection();
 
-    // Ajouter un livre
-    public void ajouter(Livre livre) {
-        String sql = "INSERT INTO livre (titre, auteur, categorie_id) VALUES (?, ?, ?)";
+    public void ajouter(Livre l) {
+        String sql = "INSERT INTO livre (titre, auteur, nb_exemplaires) VALUES (?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, livre.getTitre());
-            ps.setString(2, livre.getAuteur());
-            ps.setInt(3, livre.getCategorie().getId());
+            ps.setString(1, l.getTitre());
+            ps.setString(2, l.getAuteur());
+            ps.setInt(3, l.getNbExemplaires());
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
-    // Modifier un livre
-    public void modifier(Livre livre) {
-        String sql = "UPDATE livre SET titre=?, auteur=?, categorie_id=? WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, livre.getTitre());
-            ps.setString(2, livre.getAuteur());
-            ps.setInt(3, livre.getCategorie().getId());
-            ps.setInt(4, livre.getId());
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+    public List<Livre> lister() {
+        List<Livre> livres = new ArrayList<>();
+        String sql = "SELECT * FROM livre";
+        try (Statement st = conn.createStatement();
+             ResultSet rs = st.executeQuery(sql)) {
 
-    // Supprimer un livre
-    public void supprimer(int id) {
-        String sql = "DELETE FROM livre WHERE id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    // Chercher un livre par ID
-    public Livre chercherParId(int id) {
-        String sql = "SELECT l.id, l.titre, l.auteur, c.id AS cid, c.nom AS cname " +
-                     "FROM livre l JOIN categorie c ON l.categorie_id = c.id WHERE l.id=?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    Categorie c = new Categorie(rs.getInt("cid"), rs.getString("cname"));
-                    return new Livre(rs.getInt("id"), rs.getString("titre"), rs.getString("auteur"), c);
-                }
+            while (rs.next()) {
+                Livre l = new Livre();
+                l.setId(rs.getInt("id"));
+                l.setTitre(rs.getString("titre"));
+                l.setAuteur(rs.getString("auteur"));
+                l.setNbExemplaires(rs.getInt("nb_exemplaires"));
+                livres.add(l);
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+        return livres;
+    }
+
+    public Livre chercherParId(int id) {
+        String sql = "SELECT * FROM livre WHERE id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Livre l = new Livre();
+                l.setId(rs.getInt("id"));
+                l.setTitre(rs.getString("titre"));
+                l.setAuteur(rs.getString("auteur"));
+                l.setNbExemplaires(rs.getInt("nb_exemplaires"));
+                return l;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
         return null;
     }
 
-    // Lister tous les livres
-    public List<Livre> lister() {
-        List<Livre> list = new ArrayList<>();
-        String sql = "SELECT l.id, l.titre, l.auteur, c.id AS cid, c.nom AS cname " +
-                     "FROM livre l JOIN categorie c ON l.categorie_id = c.id";
-        try (Statement st = conn.createStatement();
-             ResultSet rs = st.executeQuery(sql)) {
-            while (rs.next()) {
-                Categorie c = new Categorie(rs.getInt("cid"), rs.getString("cname"));
-                list.add(new Livre(rs.getInt("id"), rs.getString("titre"), rs.getString("auteur"), c));
-            }
+    public void decrementerStock(int idLivre) {
+        String sql = "UPDATE livre SET nb_exemplaires = nb_exemplaires - 1 WHERE id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idLivre);
+            ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
-        return list;
+    }
+
+    public void incrementerStock(int idLivre) {
+        String sql = "UPDATE livre SET nb_exemplaires = nb_exemplaires + 1 WHERE id=?";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idLivre);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

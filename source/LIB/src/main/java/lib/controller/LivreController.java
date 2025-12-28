@@ -2,32 +2,38 @@ package lib.controller;
 
 import lib.service.LivreService;
 import lib.ui.LivreForm;
+import lib.ui.LivreList;
+import lib.model.Livre;
+
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 
 public class LivreController {
 
     private LivreForm form;
-    private LivreService service;
+    private LivreList list;
+    private LivreService service = new LivreService();
 
-    public LivreController(LivreForm form) {
+    public LivreController(LivreForm form, LivreList list) {
         this.form = form;
-        this.service = new LivreService();
-        init();
+        this.list = list;
+
+        form.getBtnSave().addActionListener(e -> ajouter());
+        charger();
     }
 
-    private void init() {
-        form.getBtnSave().addActionListener(e -> save());
+    private void ajouter() {
+        service.ajouter(form.getTitre(), form.getAuteur(), form.getStock());
+        charger();
     }
 
-    private void save() {
-        try {
-            service.addLivre(
-                    form.getIsbn(),
-                    form.getTitre(),
-                    form.getAuteur(),
-                    form.getStock()
-            );
-        } catch (Exception ex) {
-            ex.printStackTrace();
+    private void charger() {
+        DefaultTableModel model = list.getModel();
+        model.setRowCount(0);
+        for (Livre l : service.lister()) {
+            model.addRow(new Object[]{
+                    l.getId(), l.getTitre(), l.getAuteur(), l.getNbExemplaires()
+            });
         }
     }
 }

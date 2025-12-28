@@ -11,11 +11,20 @@ public class EmpruntList extends JPanel {
 
     public EmpruntList() {
         setLayout(new BorderLayout());
+
         model = new DefaultTableModel(
-                new Object[]{"Adhérent", "Livre", "Date", "Statut"}, 0);
+                new Object[]{"ID", "Adhérent", "Livre", "Date", "Statut"}, 0
+        );
+
         table = new JTable(model);
         add(new JScrollPane(table), BorderLayout.CENTER);
     }
 
-    public DefaultTableModel getModel() { return model; }
+    public DefaultTableModel getModel() {
+        return model;
+    }
+
+    public JTable getTable() {
+        return table;
+    }
 }

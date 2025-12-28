@@ -1,15 +1,22 @@
-package service;
+package lib.service;
 
-import model.Adherent;
+import lib.dao.AdherentDao;
+import lib.model.Adherent;
+
+import java.util.List;
 
 public class AdherentService {
 
-    public boolean peutEmprunter(Adherent adherent) {
-        return !adherent.isBloque()
-               && adherent.getEmprunts().size() < 3;
+    private AdherentDao dao = new AdherentDao();
+
+    public void ajouter(String nom, String email) {
+        Adherent a = new Adherent();
+        a.setNom(nom);
+        a.setEmail(email);
+        dao.ajouter(a);
     }
 
-    public void bloquer(Adherent adherent) {
-        adherent.setBloque(true);
+    public List<Adherent> getAdherents() {
+        return dao.lister();
     }
 }

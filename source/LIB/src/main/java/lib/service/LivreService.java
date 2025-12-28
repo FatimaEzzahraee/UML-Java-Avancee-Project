@@ -1,18 +1,34 @@
-package service;
+package lib.service;
 
-import model.Livre;
+import lib.dao.LivreDAO;
+import lib.model.Livre;
+import java.util.List;
 
 public class LivreService {
 
-    public boolean estDisponible(Livre livre) {
-        return livre.getNbExemplaires() > 0;
+    private LivreDAO dao = new LivreDAO();
+
+    public void ajouter(String titre, String auteur, int stock) {
+        Livre l = new Livre();
+        l.setTitre(titre);
+        l.setAuteur(auteur);
+        l.setNbExemplaires(stock);
+        dao.ajouter(l);
     }
 
-    public void decrementerExemplaire(Livre livre) {
-        livre.setNbExemplaires(livre.getNbExemplaires() - 1);
+    public List<Livre> lister() {
+        return dao.lister();
     }
 
-    public void incrementerExemplaire(Livre livre) {
-        livre.setNbExemplaires(livre.getNbExemplaires() + 1);
+    public Livre chercher(int id) {
+        return dao.chercherParId(id);
+    }
+
+    public void decrementerStock(int id) {
+        dao.decrementerStock(id);
+    }
+
+    public void incrementerStock(int id) {
+        dao.incrementerStock(id);
     }
 }

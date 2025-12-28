@@ -1,44 +1,52 @@
-package service;
+package lib.service;
 
-import model.*;
+import lib.dao.EmpruntDAO;
+import lib.dao.AdherentDao;
+import lib.model.Emprunt;
+import lib.model.Adherent;
+import lib.model.Livre;
+
 import java.time.LocalDate;
+import java.util.List;
 
 public class EmpruntService {
 
-    private AdherentService adherentService;
-    private LivreService livreService;
+    private EmpruntDAO empruntDAO = new EmpruntDAO();
+    private LivreService livreService = new LivreService();
+    private AdherentDao adherentDao = new AdherentDao();
 
-    public EmpruntService(AdherentService adherentService,
-                          LivreService livreService) {
-        this.adherentService = adherentService;
-        this.livreService = livreService;
-    }
+    public void emprunter(int idAdherent, int idLivre) {
 
-    public Emprunt emprunter(Adherent adherent, Livre livre) {
-
-        if (!adherentService.peutEmprunter(adherent)) {
-            return null;
+        Adherent a = adherentDao.chercherParId(idAdherent);
+        if (a == null) {
+            throw new RuntimeException("Adhérent introuvable");
         }
 
-        if (!livreService.estDisponible(livre)) {
-            return null;
+        Livre l = livreService.chercher(idLivre);
+        if (l == null) {
+            throw new RuntimeException("Livre introuvable");
         }
 
-        livreService.decrementerExemplaire(livre);
+        if (l.getNbExemplaires() <= 0) {
+            throw new RuntimeException("Stock insuffisant");
+        }
 
-        return new Emprunt(
-                0,
-                livre,
-                adherent,
-                LocalDate.now(),
-                null,
-                "EN_COURS"
-        );
+        Emprunt e = new Emprunt();
+        e.setAdherent(a);
+        e.setLivre(l);
+        e.setDateEmprunt(LocalDate.now());
+        e.setStatut("EN_COURS");
+
+        empruntDAO.ajouter(e);
+        livreService.decrementerStock(idLivre);
     }
 
-    public void retourner(Emprunt emprunt) {
-        emprunt.setDateRetour(LocalDate.now());
-        emprunt.setStatut("RETOURNE");
-        livreService.incrementerExemplaire(emprunt.getLivre());
+    public void retourner(int idEmprunt, int idLivre) {
+        empruntDAO.retourner(idEmprunt);
+        livreService.incrementerStock(idLivre);
+    }
+
+    public List<Emprunt> lister() {
+        return empruntDAO.lister();
     }
 }
