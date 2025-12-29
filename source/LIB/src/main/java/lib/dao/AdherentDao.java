@@ -61,6 +61,7 @@ public class AdherentDao {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
+            	
                 Adherent a = new Adherent();
                 a.setId(rs.getInt("id"));
                 a.setNom(rs.getString("nom"));

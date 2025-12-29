@@ -60,17 +60,11 @@ public class EmpruntDAO {
 
     // ================= RETOURNER UN EMPRUNT =================
     public void retourner(int idEmprunt) {
-
-        Emprunt e = chercherParId(idEmprunt);
-        if (e == null) {
-            throw new RuntimeException("Emprunt introuvable");
-        }
-
-        // Réincrémenter le stock
-        e.getLivre().retournerExemplaire();
-        new LivreDAO().mettreAJour(e.getLivre());
-
-        String sql = "UPDATE emprunt SET date_retour=?, statut='RETOURNE' WHERE id=?";
+        String sql = """
+            UPDATE emprunt
+            SET date_retour = ?, statut = 'RETOURNE'
+            WHERE id = ?
+        """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDate(1, Date.valueOf(LocalDate.now()));
@@ -80,6 +74,7 @@ public class EmpruntDAO {
             throw new RuntimeException(ex);
         }
     }
+
 
     // ================= LISTER TOUS LES EMPRUNTS =================
     public List<Emprunt> lister() {

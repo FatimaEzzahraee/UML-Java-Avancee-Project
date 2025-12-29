@@ -65,7 +65,6 @@ public class EmpruntService {
 
         a.getEmpruntsActifs().add(e);
         empruntDAO.ajouter(e);
-        livreService.decrementerStock(idLivre);
     }
 
     // ===== RETOURNER UN LIVRE =====

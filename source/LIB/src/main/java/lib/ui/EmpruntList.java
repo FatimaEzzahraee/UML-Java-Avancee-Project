@@ -14,13 +14,17 @@ public class EmpruntList extends JPanel {
     private List<Emprunt> emprunts = new ArrayList<>();
 
     public EmpruntList() {
-        model = new DefaultTableModel(new Object[]{"ID", "Adhérent", "Livre", "Date", "Statut"}, 0);
         table = new JTable(model);
         add(new JScrollPane(table));
     }
 
     public DefaultTableModel getModel() {
         return model;
+    }
+    
+    public void setModel(DefaultTableModel model) {
+        this.model = model;
+        table.setModel(model);
     }
 
     public JTable getTable() {
